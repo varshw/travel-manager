@@ -58,48 +58,44 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Pagination Controls
-    const prevButton = document.getElementById("prevPage");
-    const nextButton = document.getElementById("nextPage");
+    document.getElementById("prevPage")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderDestinations();
+        }
+    });
 
-    if (prevButton) {
-        prevButton.addEventListener("click", () => {
-            console.log("Prev Clicked");
-            if (currentPage > 1) {
-                currentPage--;
-                renderDestinations();
-            }
-        });
-    }
-
-    if (nextButton) {
-        nextButton.addEventListener("click", () => {
-            console.log("Next Clicked");
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderDestinations();
-            }
-        });
-    }
+    document.getElementById("nextPage")?.addEventListener("click", () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderDestinations();
+        }
+    });
 
     document.getElementById("sortOptions")?.addEventListener("change", renderDestinations);
 
     // Popup Functions
-    function openPopup(imageSrc, title, description) {
+    window.openPopup = function (imageSrc, title, description) {
+        console.log("Popup Opened:", title);
+
         const popup = document.getElementById("popup");
-        if (!popup) return;
+        if (!popup) {
+            console.error("Popup element not found!");
+            return;
+        }
+
         document.getElementById("popupImage").src = imageSrc;
         document.getElementById("popupTitle").innerText = title;
         document.getElementById("popupDescription").innerText = description;
+
         popup.style.display = "flex";
     }
 
-    function closePopup() {
-        const popup = document.getElementById("popup");
-        if (popup) {
-            popup.style.display = "none";
-        }
+    window.closePopup = function () {
+        console.log("Popup Closed");
+        document.getElementById("popup").style.display = "none";
     }
-    
+
     // Slideshow Functionality
     const slides = document.querySelectorAll(".slide");
     let index = 0;
@@ -112,7 +108,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         slides[index].classList.add("active");
-
         setInterval(showNextSlide, 3000);
     }
 
