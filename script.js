@@ -8,17 +8,16 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     let currentPage = 1;
-    const perPage = 2; // Show 2 destinations per page
-    const totalPages = Math.ceil(destinations.length / perPage); // Auto-detect total pages
+    const perPage = 2; 
+    const totalPages = Math.ceil(destinations.length / perPage);
 
-    // Function to Render Destinations
     function renderDestinations() {
         const container = document.getElementById("destinationContainer");
         if (!container) return;
         container.innerHTML = "";
 
         let sortedData = [...destinations];
-        const sortBy = document.getElementById("sortOptions") ? document.getElementById("sortOptions").value : "name";
+        const sortBy = document.getElementById("sortOptions")?.value || "name";
 
         if (sortBy === "name") {
             sortedData.sort((a, b) => a.name.localeCompare(b.name));
@@ -42,31 +41,45 @@ document.addEventListener("DOMContentLoaded", function () {
             container.appendChild(card);
         });
 
-        // Update pagination display
-        const pageNumber = document.getElementById("pageNumber");
-        if (pageNumber) {
-            pageNumber.innerText = `${currentPage} / ${totalPages}`;
-        }
+        console.log(`Current Page: ${currentPage}, Total Pages: ${totalPages}`);
 
-        // Disable buttons if needed
-        document.getElementById("prevPage")?.setAttribute("disabled", currentPage === 1);
-        document.getElementById("nextPage")?.setAttribute("disabled", currentPage === totalPages);
+        const pageNumber = document.getElementById("pageNumber");
+        if (pageNumber) pageNumber.innerText = `${currentPage} / ${totalPages}`;
+
+        document.getElementById("prevPage")?.removeAttribute("disabled");
+        document.getElementById("nextPage")?.removeAttribute("disabled");
+
+        if (currentPage === 1) {
+            document.getElementById("prevPage")?.setAttribute("disabled", "true");
+        }
+        if (currentPage === totalPages) {
+            document.getElementById("nextPage")?.setAttribute("disabled", "true");
+        }
     }
 
     // Pagination Controls
-    document.getElementById("prevPage")?.addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderDestinations();
-        }
-    });
+    const prevButton = document.getElementById("prevPage");
+    const nextButton = document.getElementById("nextPage");
 
-    document.getElementById("nextPage")?.addEventListener("click", () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderDestinations();
-        }
-    });
+    if (prevButton) {
+        prevButton.addEventListener("click", () => {
+            console.log("Prev Clicked");
+            if (currentPage > 1) {
+                currentPage--;
+                renderDestinations();
+            }
+        });
+    }
+
+    if (nextButton) {
+        nextButton.addEventListener("click", () => {
+            console.log("Next Clicked");
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderDestinations();
+            }
+        });
+    }
 
     document.getElementById("sortOptions")?.addEventListener("change", renderDestinations);
 
@@ -87,21 +100,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-    // ✅ FIXED: Slideshow (Removed duplicate 'let slides' declaration)
+    // Slideshow Functionality
     const slides = document.querySelectorAll(".slide");
     let index = 0;
 
     if (slides.length > 0) {
         function showNextSlide() {
             slides[index].classList.remove("active");
-            index = (index + 1) % slides.length; // Loop back to first image
+            index = (index + 1) % slides.length; 
             slides[index].classList.add("active");
         }
 
-        // Set first slide as active initially
         slides[index].classList.add("active");
 
-        // Change slide every 3 seconds
         setInterval(showNextSlide, 3000);
     }
 
@@ -123,6 +134,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Initial Render
     renderDestinations();
 });
